@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>SnipLink</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #f4f6f8;
+            --text: #0f172a;
+            --muted: #6b7280;
+            --primary: #10b981;
+            --border: #e5e7eb;
+            --card: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1100px;
+            width: 100%;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 60px;
+        }
+
+        .logo-box {
+            width: 36px;
+            height: 36px;
+            background: #10b981;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e6f7f1;
+            color: #059669;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text);
+        }
+
+        .highlight {
+            color: var(--primary);
+        }
+
+        .subtext {
+            margin-top: 16px;
+            color: var(--muted);
+            font-size: 18px;
+        }
+
+        .input-card {
+            margin-top: 40px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .input-card input {
+            flex: 1;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-card button {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            border: none;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .input-card button:hover {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        /* RESULT BOX */
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            display: none;
+        }
+
+        .result-box a {
+            color: #059669;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .result-box a:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 60px;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 32px;
+            }
+
+            .input-card {
+                flex-direction: column;
+            }
+
+            .input-card button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo-box">🔗</div>
+        SnipLink
+    </div>
+
+    <!-- Badge -->
+    <div class="badge">✨ Fast & free URL shortener</div>
+
+    <!-- Heading -->
+    <h1>
+        Shorten your links,<br />
+        <span class="highlight">amplify your reach</span>
+    </h1>
+
+    <!-- Subtext -->
+    <p class="subtext">
+        Transform long, messy URLs into clean, shareable links in seconds.
+    </p>
+
+    <!-- Input -->
+    <div class="input-card">
+        <input type="text" id="urlInput" placeholder="Paste your long URL here..." />
+        <button onclick="shortenUrl()">Shorten →</button>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result-box" id="resultBox">
+        Short URL: <a id="shortUrl" target="_blank"></a>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        Built with SnipLink · Your links, simplified.
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script>
+    function shortenUrl() {
+        const url = document.getElementById("urlInput").value;
+
+        if (!url) {
+            alert("Please enter a URL");
+            return;
+        }
+
+        fetch("http://3.89.103.52:8080/shorten?url=" + encodeURIComponent(url))
+            .then(res => res.text())
+            .then(data => {
+                const resultBox = document.getElementById("resultBox");
+                const shortUrl = document.getElementById("shortUrl");
+
+                shortUrl.href = data;
+                shortUrl.innerText = data;
+
+                resultBox.style.display = "block";
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Error connecting to backend");
+            });
+    }
+</script>
+
+</body>
+</html>
